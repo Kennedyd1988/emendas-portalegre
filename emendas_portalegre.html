@@ -18,6 +18,7 @@
 </head>
 <body>
     <h1>PREFEITURA MUNICIPAL DE PORTALEGRE/RN<br>EMENDAS PARLAMENTARES RECEBIDAS</h1>
+    <p id="data-atualizada" style="text-align: right; font-style: italic;"></p>
     <table id="emendas" class="display nowrap" style="width:100%">
         <thead>
             <tr>
@@ -71,5 +72,10 @@
             });
         });
     </script>
+    <script>
+    const hoje = new Date();
+    const dataFormatada = hoje.toLocaleDateString('pt-BR');
+    document.getElementById('data-atualizada').textContent = `Dados atualizados em: ${dataFormatada}`;
+</script>
 </body>
 </html>
