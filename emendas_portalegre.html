@@ -76,48 +76,18 @@
     document.getElementById('data-atualizada').textContent = `Dados atualizados em: ${dataFormatada}`;
 
 <script>
-$(document).ready(function() {
-    $('#emendas').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ],
-        scrollX: true,
-        paging: true,
-        pageLength: 10,
-        lengthMenu: [10, 25, 50, 100],
-
-        columnDefs: [
-            {
-                targets: [7, 8],
-                render: function(data, type, row) {
-                    if (type === 'sort' || type === 'type') {
-                        return parseFloat(
-                            data.toString()
-                                .replace(/\./g, '')
-                                .replace(',', '.')
-                        );
-                    }
-
-                    let valor = parseFloat(
-                        data.toString()
-                            .replace(/\./g, '')
-                            .replace(',', '.')
-                    );
-
-                    return valor.toLocaleString('pt-BR', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-                }
+    $(document).ready(function() {
+        $('#emendas').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            scrollX: true,
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
             }
-        ],
-
-        language: {
-            url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
-        }
+        });
     });
-});
 </script>
 </body>
 </html>
