@@ -110,20 +110,20 @@
   {
     "origem": "Federal",
     "ano": "2022",
-    "tipo_emenda": "Emenda Individual",
-    "autoria": "RAFAEL MOTTA",
-    "forma_repasse": "Fundo a Fundo",
     "numero_emenda": "37420002",
+    "tipo_emenda": "Emenda Individual",
+    "forma_repasse": "Fundo a Fundo",
+    "autoria": "RAFAEL MOTTA",
     "numero_convenio": "Não Aplicável",
     "valor_previsto": "99.791,00",
     "valor_repassado": "99.791,00",
     "objeto": "EQUIPAMENTOS",
     "funcao_governo": "10 - Saúde",
-    "data_inicio_prevista": "",
-    "data_termino_prevista": "",
-    "situacao_execucao": "A definir",
+    "data_inicio_prevista": "2022-06-23",
+    "data_termino_prevista": "2025-06-23",
+    "situacao_execucao": "Concluída",
     "obs_cronograma": "",
-    "plano_trabalho_pdf": ""
+    "plano_trabalho_pdf": "documentos/37420002-1785939394875.pdf"
   },
   {
     "origem": "Federal",
