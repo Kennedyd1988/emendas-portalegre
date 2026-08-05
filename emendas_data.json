@@ -182,20 +182,20 @@
   {
     "origem": "Federal",
     "ano": "2024",
-    "tipo_emenda": "Emenda Individual",
-    "autoria": "JOÃO MAIA",
-    "forma_repasse": "Fundo a Fundo",
     "numero_emenda": "24460002",
+    "tipo_emenda": "Emenda Individual",
+    "forma_repasse": "Fundo a Fundo",
+    "autoria": "JOÃO MAIA",
     "numero_convenio": "Não Aplicável",
     "valor_previsto": "300.000,00",
     "valor_repassado": "300.000,00",
     "objeto": "INCREMENTO TEMPORÁRIO AO CUSTEIO DOS SERVIÇOS DE ATENÇÃO PRIMÁRIA EM SAÚDE PARA CUMPRIMENTO DAS METAS - NACIONAL",
     "funcao_governo": "10 - Saúde",
-    "data_inicio_prevista": "",
-    "data_termino_prevista": "",
-    "situacao_execucao": "A definir",
+    "data_inicio_prevista": "2024-05-23",
+    "data_termino_prevista": "2027-05-23",
+    "situacao_execucao": "Em andamento",
     "obs_cronograma": "",
-    "plano_trabalho_pdf": ""
+    "plano_trabalho_pdf": "documentos/24460002-1785939960281.pdf"
   },
   {
     "origem": "Federal",
