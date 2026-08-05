@@ -272,20 +272,20 @@
   {
     "origem": "Federal",
     "ano": "2024",
-    "tipo_emenda": "Emenda de Bancada",
-    "autoria": "BANCADA DO RIO GRANDE DO NORTE",
-    "forma_repasse": "Fundo a Fundo",
     "numero_emenda": "71210004",
+    "tipo_emenda": "Emenda de Bancada",
+    "forma_repasse": "Fundo a Fundo",
+    "autoria": "BANCADA DO RIO GRANDE DO NORTE",
     "numero_convenio": "Não Aplicável",
     "valor_previsto": "900.000,00",
     "valor_repassado": "900.000,00",
     "objeto": "INCREMENTO TEMPORÁRIO AO CUSTEIO DOS SERVIÇOS DE ATENÇÃO PRIMÁRIA EM SAÚDE PARA CUMPRIMENTO DAS METAS - NACIONAL",
     "funcao_governo": "10 - Saúde",
-    "data_inicio_prevista": "",
-    "data_termino_prevista": "",
-    "situacao_execucao": "A definir",
+    "data_inicio_prevista": "2024-12-13",
+    "data_termino_prevista": "2027-12-13",
+    "situacao_execucao": "Concluída",
     "obs_cronograma": "",
-    "plano_trabalho_pdf": ""
+    "plano_trabalho_pdf": "documentos/71210004-1785940723025.pdf"
   },
   {
     "origem": "Federal",
