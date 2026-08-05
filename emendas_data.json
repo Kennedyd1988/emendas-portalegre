@@ -434,20 +434,20 @@
   {
     "origem": "Federal",
     "ano": "2025",
-    "tipo_emenda": "Emenda de Comissão",
-    "autoria": "COMISSÃO DE ASSUNTOS SOCIAIS - CAS",
-    "forma_repasse": "Fundo a Fundo",
     "numero_emenda": "60060003",
+    "tipo_emenda": "Emenda de Comissão",
+    "forma_repasse": "Fundo a Fundo",
+    "autoria": "COMISSÃO DE ASSUNTOS SOCIAIS - CAS",
     "numero_convenio": "Não Aplicável",
     "valor_previsto": "1.250.222,00",
     "valor_repassado": "1.250.222,00",
     "objeto": "INCREMENTO TEMPORÁRIO AO CUSTEIO DOS SERVIÇOS DE ATENÇÃO PRIMÁRIA EM SAÚDE PARA CUMPRIMENTO DAS METAS - NACIONAL",
     "funcao_governo": "10 - Saúde",
-    "data_inicio_prevista": "",
-    "data_termino_prevista": "",
-    "situacao_execucao": "A definir",
+    "data_inicio_prevista": "2025-01-01",
+    "data_termino_prevista": "2028-01-01",
+    "situacao_execucao": "Em andamento",
     "obs_cronograma": "",
-    "plano_trabalho_pdf": ""
+    "plano_trabalho_pdf": "documentos/60060003-1785941723140.pdf"
   },
   {
     "origem": "Federal",
