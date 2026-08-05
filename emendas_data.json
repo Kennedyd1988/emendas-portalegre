@@ -362,20 +362,20 @@
   {
     "origem": "Federal",
     "ano": "2025",
-    "tipo_emenda": "Emenda Individual",
-    "autoria": "BENES LEOCÁDIO",
-    "forma_repasse": "Fundo a Fundo",
     "numero_emenda": "39170003",
+    "tipo_emenda": "Emenda Individual",
+    "forma_repasse": "Fundo a Fundo",
+    "autoria": "BENES LEOCÁDIO",
     "numero_convenio": "Não Aplicável",
     "valor_previsto": "242.303,00",
     "valor_repassado": "242.303,00",
     "objeto": "INCREMENTO TEMPORÁRIO AO CUSTEIO DOS SERVIÇOS DE ASSISTÊNCIA HOSPITALAR E AMBULATORIAL PARA CUMPRIMENTO DAS METAS - NACIONAL",
     "funcao_governo": "10 - Saúde",
-    "data_inicio_prevista": "",
-    "data_termino_prevista": "",
-    "situacao_execucao": "A definir",
+    "data_inicio_prevista": "2025-09-30",
+    "data_termino_prevista": "2028-09-30",
+    "situacao_execucao": "Em andamento",
     "obs_cronograma": "",
-    "plano_trabalho_pdf": ""
+    "plano_trabalho_pdf": "documentos/39170003-1785940846160.pdf"
   },
   {
     "origem": "Federal",
