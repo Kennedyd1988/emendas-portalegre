@@ -1,2 +1,5 @@
 .claude/
 server.log
+token Github.txt
+*.pat
+*token*.txt

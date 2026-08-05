@@ -169,6 +169,12 @@
                 <label>Observações do Plano de Trabalho (etapas, link do documento, etc.)</label>
                 <textarea id="f-obs_cronograma"></textarea>
 
+                <label>Anexar Plano de Trabalho (PDF)</label>
+                <input id="f-arquivo-pdf" type="file" accept="application/pdf">
+                <input type="hidden" id="f-plano_trabalho_pdf" value="">
+                <div id="pdf-status" style="font-size:12px; margin-top:6px; color:#555;">Nenhum arquivo anexado. Sem PDF, a coluna mostrará "Não Aplicável".</div>
+                <button class="btn btn-outline" id="btn-remover-pdf" type="button" style="padding:4px 10px; font-size:11.5px;">Remover anexo</button>
+
                 <button class="btn btn-primary" id="btn-salvar-registro">Adicionar registro</button>
                 <button class="btn btn-outline" id="btn-cancelar-edicao" style="display:none;">Cancelar edição</button>
             </div>
@@ -182,7 +188,7 @@
                         <thead>
                             <tr>
                                 <th>Ano</th><th>Nº Emenda</th><th>Tipo</th><th>Autoria</th><th>Objeto</th>
-                                <th>Início</th><th>Término</th><th>Situação</th><th></th>
+                                <th>Início</th><th>Término</th><th>Situação</th><th>PDF</th><th></th>
                             </tr>
                         </thead>
                         <tbody id="corpo-tabela"></tbody>
@@ -240,6 +246,61 @@ function b64EncodeUnicode(str) {
 }
 function b64DecodeUnicode(str) {
     return decodeURIComponent(atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+}
+
+function arrayBufferToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+    return btoa(binary);
+}
+
+function slugify(str) {
+    return (str || 'documento')
+        .normalize('NFD').replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'documento';
+}
+
+async function uploadPdf(file) {
+    const cfg = cfgStorage();
+    if (!cfg.owner || !cfg.repo || !cfg.token) {
+        alert('Preencha e salve a configuração do GitHub (owner, repositório e token) antes de anexar um PDF.');
+        return null;
+    }
+    if (file.type !== 'application/pdf') {
+        alert('Selecione um arquivo em PDF.');
+        return null;
+    }
+    const numero = document.getElementById('f-numero_emenda').value || 'emenda';
+    const caminho = `documentos/${slugify(numero)}-${Date.now()}.pdf`;
+    document.getElementById('pdf-status').textContent = 'Enviando PDF para o GitHub...';
+    try {
+        const buffer = await file.arrayBuffer();
+        const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${caminho}`;
+        const res = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                Authorization: `token ${cfg.token}`,
+                Accept: 'application/vnd.github+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: `Anexa plano de trabalho (PDF) - ${file.name}`,
+                content: arrayBufferToBase64(buffer),
+                branch: cfg.branch
+            })
+        });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(`${res.status} ${res.statusText} - ${err.message || ''}`);
+        }
+        document.getElementById('f-plano_trabalho_pdf').value = caminho;
+        document.getElementById('pdf-status').textContent = `Anexado: ${file.name} (será publicado junto com o registro)`;
+        return caminho;
+    } catch (e) {
+        document.getElementById('pdf-status').textContent = 'Erro ao enviar PDF: ' + e.message;
+        return null;
+    }
 }
 
 async function carregarDados() {
@@ -312,10 +373,12 @@ async function publicarDados() {
 function limparFormulario() {
     ['origem', 'ano', 'numero_emenda', 'tipo_emenda', 'forma_repasse', 'autoria', 'numero_convenio',
      'valor_previsto', 'valor_repassado', 'objeto', 'funcao_governo', 'data_inicio_prevista',
-     'data_termino_prevista', 'situacao_execucao', 'obs_cronograma'].forEach(id => {
+     'data_termino_prevista', 'situacao_execucao', 'obs_cronograma', 'plano_trabalho_pdf'].forEach(id => {
         const el = document.getElementById('f-' + id);
         if (el.tagName === 'SELECT') el.selectedIndex = 0; else el.value = '';
     });
+    document.getElementById('f-arquivo-pdf').value = '';
+    document.getElementById('pdf-status').textContent = 'Nenhum arquivo anexado. Sem PDF, a coluna mostrará "Não Aplicável".';
     editandoIndex = null;
     document.getElementById('form-titulo').textContent = '2. Nova Emenda';
     document.getElementById('btn-salvar-registro').textContent = 'Adicionar registro';
@@ -338,7 +401,8 @@ function coletarFormulario() {
         data_inicio_prevista: document.getElementById('f-data_inicio_prevista').value,
         data_termino_prevista: document.getElementById('f-data_termino_prevista').value,
         situacao_execucao: document.getElementById('f-situacao_execucao').value,
-        obs_cronograma: document.getElementById('f-obs_cronograma').value
+        obs_cronograma: document.getElementById('f-obs_cronograma').value,
+        plano_trabalho_pdf: document.getElementById('f-plano_trabalho_pdf').value
     };
 }
 
@@ -358,6 +422,11 @@ function preencherFormulario(e) {
     document.getElementById('f-data_termino_prevista').value = e.data_termino_prevista || '';
     document.getElementById('f-situacao_execucao').value = e.situacao_execucao || 'A definir';
     document.getElementById('f-obs_cronograma').value = e.obs_cronograma || '';
+    document.getElementById('f-plano_trabalho_pdf').value = e.plano_trabalho_pdf || '';
+    document.getElementById('f-arquivo-pdf').value = '';
+    document.getElementById('pdf-status').textContent = e.plano_trabalho_pdf
+        ? `PDF atual: ${e.plano_trabalho_pdf} (selecione outro arquivo para substituir)`
+        : 'Nenhum arquivo anexado. Sem PDF, a coluna mostrará "Não Aplicável".';
 }
 
 function renderTabela() {
@@ -374,6 +443,7 @@ function renderTabela() {
             <td>${e.data_inicio_prevista || '-'}</td>
             <td>${e.data_termino_prevista || '-'}</td>
             <td>${e.situacao_execucao || ''}</td>
+            <td>${e.plano_trabalho_pdf ? '📄 Sim' : 'Não Aplicável'}</td>
             <td>
                 <button class="btn btn-edit" data-i="${i}" data-acao="editar">Editar</button>
                 <button class="btn btn-danger" data-i="${i}" data-acao="excluir">Excluir</button>
@@ -419,6 +489,18 @@ document.getElementById('btn-salvar-registro').addEventListener('click', () => {
 });
 
 document.getElementById('btn-cancelar-edicao').addEventListener('click', limparFormulario);
+
+document.getElementById('f-arquivo-pdf').addEventListener('change', async (ev) => {
+    const file = ev.target.files[0];
+    if (!file) return;
+    await uploadPdf(file);
+});
+
+document.getElementById('btn-remover-pdf').addEventListener('click', () => {
+    document.getElementById('f-plano_trabalho_pdf').value = '';
+    document.getElementById('f-arquivo-pdf').value = '';
+    document.getElementById('pdf-status').textContent = 'Nenhum arquivo anexado. Sem PDF, a coluna mostrará "Não Aplicável".';
+});
 
 document.getElementById('btn-salvar-cfg').addEventListener('click', () => {
     localStorage.setItem('pmp_admin_cfg', JSON.stringify(cfgStorage()));

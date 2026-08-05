@@ -13,7 +13,7 @@
 
 <div class="pmp-topbar">
     <a href="https://www.portalegre.rn.gov.br/" target="_blank" rel="noopener">Portal da Prefeitura</a>
-    <a href="https://www.portalegre.rn.gov.br/transparencia.php" target="_blank" rel="noopener">Portal da Transparência</a>
+    <a href="https://www.portalegre.rn.gov.br/acessoainformacao.php" target="_blank" rel="noopener">Portal da Transparência</a>
 </div>
 
 <div class="pmp-banner">
@@ -26,13 +26,12 @@
 
 <div class="pmp-nav">
     <a href="https://www.portalegre.rn.gov.br/" target="_blank" rel="noopener">Início</a>
-    <a href="https://www.portalegre.rn.gov.br/transparencia.php" target="_blank" rel="noopener">Transparência</a>
+    <a href="https://www.portalegre.rn.gov.br/acessoainformacao.php" target="_blank" rel="noopener">Transparência</a>
     <a class="ativo" href="emendas_portalegre.html">Emendas Parlamentares</a>
-    <a href="admin.html">Painel Administrativo</a>
 </div>
 
 <div class="pmp-breadcrumb">
-    <a href="https://www.portalegre.rn.gov.br/">Início</a> / <a href="https://www.portalegre.rn.gov.br/transparencia.php">Transparência</a> / Emendas Parlamentares
+    <a href="https://www.portalegre.rn.gov.br/">Início</a> / <a href="https://www.portalegre.rn.gov.br/acessoainformacao.php">Transparência</a> / Emendas Parlamentares
 </div>
 
 <div class="pmp-container">
@@ -118,6 +117,19 @@ function formatarMoeda(n) {
     return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+function celulaPlanoTrabalho(e) {
+    let html = '';
+    if (e.plano_trabalho_pdf) {
+        html += `<a href="${e.plano_trabalho_pdf}" target="_blank" rel="noopener">📄 Ver Plano de Trabalho (PDF)</a>`;
+        if (e.obs_cronograma) html += `<br><span style="font-size:11px;color:#666;">${e.obs_cronograma}</span>`;
+    } else if (e.obs_cronograma) {
+        html = e.obs_cronograma;
+    } else {
+        html = 'Não Aplicável';
+    }
+    return html;
+}
+
 fetch('emendas_data.json?_=' + Date.now())
     .then(r => r.json())
     .then(dados => {
@@ -143,7 +155,7 @@ fetch('emendas_data.json?_=' + Date.now())
                 <td>${formatarData(e.data_inicio_prevista)}</td>
                 <td>${formatarData(e.data_termino_prevista)}</td>
                 <td>${badgeSituacao(e.situacao_execucao)}</td>
-                <td>${e.obs_cronograma || ''}</td>
+                <td>${celulaPlanoTrabalho(e)}</td>
             `;
             tbody.appendChild(tr);
         });
