@@ -182,20 +182,20 @@
   {
     "origem": "Federal",
     "ano": "2024",
-    "tipo_emenda": "Emenda Individual",
-    "autoria": "ROGÉRIO MARINHO",
-    "forma_repasse": "Fundo a Fundo",
     "numero_emenda": "42760014",
+    "tipo_emenda": "Emenda Individual",
+    "forma_repasse": "Fundo a Fundo",
+    "autoria": "ROGÉRIO MARINHO",
     "numero_convenio": "Não Aplicável",
     "valor_previsto": "200.000,00",
     "valor_repassado": "200.000,00",
     "objeto": "INCREMENTO TEMPORÁRIO AO CUSTEIO DOS SERVIÇOS DE ATENÇÃO PRIMÁRIA EM SAÚDE PARA CUMPRIMENTO DAS METAS - NACIONAL",
     "funcao_governo": "10 - Saúde",
-    "data_inicio_prevista": "",
-    "data_termino_prevista": "",
-    "situacao_execucao": "A definir",
+    "data_inicio_prevista": "2024-06-25",
+    "data_termino_prevista": "2027-06-25",
+    "situacao_execucao": "Concluída",
     "obs_cronograma": "",
-    "plano_trabalho_pdf": ""
+    "plano_trabalho_pdf": "documentos/42760014-1785940538076.pdf"
   },
   {
     "origem": "Federal",
