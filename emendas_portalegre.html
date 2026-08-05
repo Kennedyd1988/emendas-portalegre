@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PREFEITURA MUNICIPAL DE PORTALEGRE/RN - EMENDAS PARLAMENTARES RECEBIDAS</title>
+<link rel="icon" href="assets/logo-portalegre.png">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="pmp-topbar">
+    <a href="https://www.portalegre.rn.gov.br/" target="_blank" rel="noopener">Portal da Prefeitura</a>
+    <a href="https://www.portalegre.rn.gov.br/transparencia.php" target="_blank" rel="noopener">Portal da Transparência</a>
+</div>
+
+<div class="pmp-banner">
+    <img class="pmp-logo" src="assets/logo-portalegre.png" alt="Brasão de Portalegre/RN">
+    <div class="pmp-titulo">
+        <strong>PREFEITURA MUNICIPAL DE PORTALEGRE/RN</strong>
+        <span>Portal da Transparência &middot; Emendas Parlamentares</span>
+    </div>
+</div>
+
+<div class="pmp-nav">
+    <a href="https://www.portalegre.rn.gov.br/" target="_blank" rel="noopener">Início</a>
+    <a href="https://www.portalegre.rn.gov.br/transparencia.php" target="_blank" rel="noopener">Transparência</a>
+    <a class="ativo" href="emendas_portalegre.html">Emendas Parlamentares</a>
+    <a href="admin.html">Painel Administrativo</a>
+</div>
+
+<div class="pmp-breadcrumb">
+    <a href="https://www.portalegre.rn.gov.br/">Início</a> / <a href="https://www.portalegre.rn.gov.br/transparencia.php">Transparência</a> / Emendas Parlamentares
+</div>
+
+<div class="pmp-container">
+    <div class="pmp-card">
+        <h1>EMENDAS PARLAMENTARES RECEBIDAS</h1>
+        <div class="pmp-subtitulo">Recursos de origem federal recebidos pelo Município de Portalegre/RN</div>
+
+        <div class="pmp-legenda">
+            <strong>Sobre estas informações:</strong> Em cumprimento à publicidade exigida pelo PNTP/TCE-RN (item 17.1),
+            esta seção apresenta a origem, o tipo, a autoria, a forma de repasse, o número de identificação da emenda,
+            o número do convênio/instrumento (quando aplicável), os valores previsto e realizado, o objeto, a função de
+            governo e o plano de trabalho/cronograma de execução (datas estimadas de início e término) de cada emenda
+            parlamentar federal recebida pelo município.
+        </div>
+
+        <div id="pmp-resumo" style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:18px;"></div>
+
+        <p id="data-atualizada"></p>
+        <table id="emendas" class="display nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Origem dos Recursos</th>
+                    <th>Ano</th>
+                    <th>Nº Identificação da Emenda</th>
+                    <th>Tipo de Emenda</th>
+                    <th>Autoria (Parlamentar/Bancada/Comissão)</th>
+                    <th>Forma de Repasse</th>
+                    <th>Nº do Convênio/Instrumento</th>
+                    <th>Valor Previsto do Repasse (R$)</th>
+                    <th>Valor Repassado pelo Concedente (R$)</th>
+                    <th>Objeto/Finalidade</th>
+                    <th>Função de Governo</th>
+                    <th>Início Previsto</th>
+                    <th>Término Previsto</th>
+                    <th>Situação da Execução</th>
+                    <th>Plano de Trabalho / Observações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="pmp-footer">
+    Prefeitura Municipal de Portalegre/RN &middot; Gabinete do Prefeito &middot; Dados publicados em cumprimento ao Programa Nacional de Transparência Pública (PNTP/TCE-RN)
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.flash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
+<script>
+function formatarData(iso) {
+    if (!iso) return '<span style="color:#a12626;">A definir</span>';
+    const partes = iso.split('-');
+    if (partes.length !== 3) return iso;
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+function badgeSituacao(sit) {
+    const map = {
+        'Não iniciada': 'badge-nao-iniciada',
+        'Em andamento': 'badge-em-andamento',
+        'Concluída': 'badge-concluida',
+        'A definir': 'badge-a-definir'
+    };
+    const cls = map[sit] || 'badge-a-definir';
+    return `<span class="badge-situacao ${cls}">${sit || 'A definir'}</span>`;
+}
+
+function paraNumero(valorBr) {
+    if (!valorBr) return 0;
+    return parseFloat(String(valorBr).replace(/\./g, '').replace(',', '.')) || 0;
+}
+
+function formatarMoeda(n) {
+    return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+fetch('emendas_data.json?_=' + Date.now())
+    .then(r => r.json())
+    .then(dados => {
+        const tbody = document.querySelector('#emendas tbody');
+        let totalPrevisto = 0, totalRepassado = 0;
+
+        dados.forEach(e => {
+            totalPrevisto += paraNumero(e.valor_previsto);
+            totalRepassado += paraNumero(e.valor_repassado);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${e.origem || ''}</td>
+                <td>${e.ano || ''}</td>
+                <td>${e.numero_emenda || ''}</td>
+                <td>${e.tipo_emenda || ''}</td>
+                <td>${e.autoria || ''}</td>
+                <td>${e.forma_repasse || ''}</td>
+                <td>${e.numero_convenio || 'Não Aplicável'}</td>
+                <td>${e.valor_previsto || ''}</td>
+                <td>${e.valor_repassado || ''}</td>
+                <td>${e.objeto || ''}</td>
+                <td>${e.funcao_governo || ''}</td>
+                <td>${formatarData(e.data_inicio_prevista)}</td>
+                <td>${formatarData(e.data_termino_prevista)}</td>
+                <td>${badgeSituacao(e.situacao_execucao)}</td>
+                <td>${e.obs_cronograma || ''}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('pmp-resumo').innerHTML = `
+            <div class="pmp-legenda" style="flex:1; min-width:200px; text-align:center;"><strong>${dados.length}</strong><br>Emendas recebidas</div>
+            <div class="pmp-legenda" style="flex:1; min-width:200px; text-align:center;"><strong>R$ ${formatarMoeda(totalPrevisto)}</strong><br>Valor total previsto</div>
+            <div class="pmp-legenda" style="flex:1; min-width:200px; text-align:center;"><strong>R$ ${formatarMoeda(totalRepassado)}</strong><br>Valor total repassado</div>
+        `;
+
+        $('#emendas').DataTable({
+            dom: 'Bfrtip',
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+            scrollX: true,
+            order: [[1, 'desc']],
+            language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json' }
+        });
+
+        const hoje = new Date();
+        document.getElementById('data-atualizada').textContent = `Dados atualizados em: ${hoje.toLocaleDateString('pt-BR')}`;
+    })
+    .catch(err => {
+        document.querySelector('#emendas tbody').innerHTML =
+            '<tr><td colspan="15">Não foi possível carregar os dados (emendas_data.json). Detalhe: ' + err + '</td></tr>';
+    });
+</script>
+</body>
+</html>

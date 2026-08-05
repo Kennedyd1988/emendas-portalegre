@@ -1,0 +1,165 @@
+/* Identidade visual alinhada ao portal oficial https://www.portalegre.rn.gov.br/ */
+:root {
+    --pmp-azul: #006cab;
+    --pmp-azul-escuro: #004d7a;
+    --pmp-azul-claro: #0097e3;
+    --pmp-vinho: #7a0c1f;
+    --pmp-vinho-escuro: #4d0812;
+    --pmp-cinza-bg: #f2f4f6;
+    --pmp-texto: #2c2c2c;
+    --pmp-borda: #e0e4e8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    margin: 0;
+    background: var(--pmp-cinza-bg);
+    color: var(--pmp-texto);
+}
+
+a { color: var(--pmp-azul); }
+
+.pmp-topbar {
+    background: var(--pmp-azul-escuro);
+    color: #fff;
+    font-size: 12px;
+    padding: 6px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 18px;
+}
+.pmp-topbar a { color: #dceeff; text-decoration: none; }
+.pmp-topbar a:hover { text-decoration: underline; }
+
+.pmp-banner {
+    background: linear-gradient(135deg, var(--pmp-vinho) 0%, var(--pmp-vinho-escuro) 100%);
+    color: #fff;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.pmp-banner img.pmp-logo {
+    height: 64px;
+    background: #fff;
+    border-radius: 6px;
+    padding: 6px 10px;
+}
+.pmp-banner .pmp-titulo {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+.pmp-banner .pmp-titulo strong {
+    font-size: 19px;
+    letter-spacing: .3px;
+}
+.pmp-banner .pmp-titulo span {
+    font-size: 13px;
+    opacity: .9;
+}
+
+.pmp-nav {
+    background: var(--pmp-azul);
+    padding: 0 24px;
+}
+.pmp-nav a {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 12px 16px;
+    letter-spacing: .3px;
+}
+.pmp-nav a:hover, .pmp-nav a.ativo {
+    background: var(--pmp-azul-claro);
+}
+
+.pmp-breadcrumb {
+    background: #fff;
+    border-bottom: 1px solid var(--pmp-borda);
+    padding: 10px 24px;
+    font-size: 13px;
+    color: #666;
+}
+.pmp-breadcrumb a { text-decoration: none; }
+.pmp-breadcrumb a:hover { text-decoration: underline; }
+
+.pmp-container {
+    max-width: 1280px;
+    margin: 24px auto;
+    padding: 0 24px 40px;
+}
+
+.pmp-card {
+    background: #fff;
+    border: 1px solid var(--pmp-borda);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    padding: 24px;
+}
+
+.pmp-card h1 {
+    color: var(--pmp-azul);
+    font-size: 22px;
+    text-align: center;
+    margin: 0 0 6px;
+}
+.pmp-card .pmp-subtitulo {
+    text-align: center;
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 18px;
+}
+
+.pmp-legenda {
+    background: #eef6fb;
+    border: 1px solid #cfe6f5;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 12.5px;
+    color: #35525f;
+    margin-bottom: 18px;
+}
+.pmp-legenda strong { color: var(--pmp-azul-escuro); }
+
+#data-atualizada {
+    text-align: right;
+    font-style: italic;
+    font-size: 12.5px;
+    color: #777;
+}
+
+.pmp-footer {
+    background: var(--pmp-azul-escuro);
+    color: #cfe3f2;
+    text-align: center;
+    font-size: 12px;
+    padding: 16px;
+    margin-top: 20px;
+}
+
+table.dataTable {
+    font-size: 12.5px;
+}
+table.dataTable thead th {
+    background: var(--pmp-azul);
+    color: #fff !important;
+    border-bottom: none !important;
+}
+table.dataTable tbody tr:nth-child(even) { background: #f7fafc; }
+
+.badge-situacao {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+}
+.badge-nao-iniciada { background: #fde3e3; color: #a12626; }
+.badge-em-andamento { background: #fff2cc; color: #8a6d00; }
+.badge-concluida { background: #dcf3df; color: #1f7a34; }
+.badge-a-definir { background: #e6e6e6; color: #555; }

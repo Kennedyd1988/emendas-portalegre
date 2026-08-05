@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel Administrativo - Emendas Parlamentares - Portalegre/RN</title>
+<link rel="icon" href="assets/logo-portalegre.png">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+    .adm-grid { display: grid; grid-template-columns: 380px 1fr; gap: 20px; align-items: start; }
+    @media (max-width: 900px) { .adm-grid { grid-template-columns: 1fr; } }
+    .adm-box { background:#fff; border:1px solid var(--pmp-borda); border-radius:8px; padding:18px; margin-bottom:18px; }
+    .adm-box h2 { font-size:15px; color: var(--pmp-azul-escuro); margin:0 0 12px; }
+    label { display:block; font-size:12.5px; font-weight:600; color:#444; margin:10px 0 4px; }
+    input, select, textarea { width:100%; padding:7px 9px; border:1px solid #ccd3d9; border-radius:5px; font-size:13px; font-family:inherit; }
+    textarea { resize:vertical; min-height:50px; }
+    .adm-row2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .btn { display:inline-block; border:none; border-radius:5px; padding:9px 16px; font-size:13px; font-weight:600; cursor:pointer; margin-top:12px; margin-right:8px; }
+    .btn-primary { background: var(--pmp-azul); color:#fff; }
+    .btn-primary:hover { background: var(--pmp-azul-escuro); }
+    .btn-success { background:#1f7a34; color:#fff; }
+    .btn-success:hover { background:#175c27; }
+    .btn-outline { background:#fff; border:1px solid #ccd3d9; color:#444; }
+    .btn-outline:hover { background:#f2f4f6; }
+    .btn-danger { background:#a12626; color:#fff; padding:4px 10px; font-size:11.5px; margin:0; }
+    .btn-edit { background:#0097e3; color:#fff; padding:4px 10px; font-size:11.5px; margin:0 4px 0 0; }
+    table.adm-tabela { width:100%; border-collapse:collapse; font-size:12px; }
+    table.adm-tabela th, table.adm-tabela td { border:1px solid var(--pmp-borda); padding:6px 8px; text-align:left; vertical-align:top; }
+    table.adm-tabela th { background: var(--pmp-azul); color:#fff; }
+    table.adm-tabela tbody tr:nth-child(even) { background:#f7fafc; }
+    #status-msg { margin-top:10px; padding:10px 12px; border-radius:6px; font-size:13px; display:none; }
+    .status-ok { background:#dcf3df; color:#1f7a34; }
+    .status-err { background:#fde3e3; color:#a12626; }
+    .status-info { background:#eef6fb; color:#35525f; }
+    .adm-aviso { background:#fff2cc; border:1px solid #e6cf7a; color:#6b5900; border-radius:6px; padding:10px 12px; font-size:12px; margin-bottom:14px; }
+    .tabela-wrap { overflow-x:auto; }
+</style>
+</head>
+<body>
+
+<div class="pmp-topbar">
+    <a href="emendas_portalegre.html">Ver página pública</a>
+</div>
+
+<div class="pmp-banner">
+    <img class="pmp-logo" src="assets/logo-portalegre.png" alt="Brasão de Portalegre/RN">
+    <div class="pmp-titulo">
+        <strong>PREFEITURA MUNICIPAL DE PORTALEGRE/RN</strong>
+        <span>Painel Administrativo &middot; Emendas Parlamentares</span>
+    </div>
+</div>
+
+<div class="pmp-nav">
+    <a href="emendas_portalegre.html">Página Pública</a>
+    <a class="ativo" href="admin.html">Painel Administrativo</a>
+</div>
+
+<div class="pmp-container">
+
+    <div class="adm-aviso">
+        <strong>Acesso restrito.</strong> Este painel grava alterações diretamente no repositório do GitHub que publica a
+        página pública. O token de acesso é salvo apenas neste navegador e nunca é enviado para nenhum lugar além do
+        GitHub. Use um <em>Personal Access Token</em> (fine-grained) restrito a este repositório, com permissão apenas de
+        leitura/escrita em "Contents". Não compartilhe este link nem o token.
+    </div>
+
+    <div class="adm-grid">
+        <div>
+            <div class="adm-box">
+                <h2>1. Conexão com o GitHub</h2>
+                <label>Usuário/Organização (owner)</label>
+                <input id="cfg-owner" placeholder="kennedyd1988">
+                <label>Repositório</label>
+                <input id="cfg-repo" placeholder="emendas-portalegre">
+                <label>Branch</label>
+                <input id="cfg-branch" placeholder="main" value="main">
+                <label>Caminho do arquivo de dados</label>
+                <input id="cfg-path" placeholder="emendas_data.json" value="emendas_data.json">
+                <label>Personal Access Token (PAT)</label>
+                <input id="cfg-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxx">
+                <button class="btn btn-outline" id="btn-salvar-cfg">Salvar configuração</button>
+                <button class="btn btn-outline" id="btn-esquecer">Esquecer token</button>
+                <button class="btn btn-primary" id="btn-carregar">Carregar dados</button>
+                <div id="status-msg"></div>
+            </div>
+
+            <div class="adm-box">
+                <h2 id="form-titulo">2. Nova Emenda</h2>
+                <div class="adm-row2">
+                    <div>
+                        <label>Origem dos Recursos</label>
+                        <select id="f-origem">
+                            <option>Federal</option>
+                            <option>Estadual</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Ano</label>
+                        <input id="f-ano" type="number" min="2000" max="2100">
+                    </div>
+                </div>
+
+                <label>Nº Identificação da Emenda</label>
+                <input id="f-numero_emenda" placeholder="Ex: 39170001">
+
+                <div class="adm-row2">
+                    <div>
+                        <label>Tipo de Emenda</label>
+                        <select id="f-tipo_emenda">
+                            <option>Emenda Individual</option>
+                            <option>Emenda de Bancada</option>
+                            <option>Emenda de Comissão</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Forma de Repasse</label>
+                        <select id="f-forma_repasse">
+                            <option>Fundo a Fundo</option>
+                            <option>Transferência Especial</option>
+                            <option>Convênio</option>
+                            <option>Contrato de Repasse</option>
+                            <option>Termo de Fomento</option>
+                            <option>Termo de Colaboração</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label>Autoria (Parlamentar/Bancada/Comissão)</label>
+                <input id="f-autoria" placeholder="Ex: BENES LEOCÁDIO">
+
+                <label>Nº do Convênio/Contrato de Repasse/Termo (se aplicável)</label>
+                <input id="f-numero_convenio" placeholder="Não Aplicável">
+
+                <div class="adm-row2">
+                    <div>
+                        <label>Valor Previsto do Repasse (R$)</label>
+                        <input id="f-valor_previsto" placeholder="300.000,00">
+                    </div>
+                    <div>
+                        <label>Valor Repassado pelo Concedente (R$)</label>
+                        <input id="f-valor_repassado" placeholder="300.000,00">
+                    </div>
+                </div>
+
+                <label>Objeto/Finalidade</label>
+                <textarea id="f-objeto"></textarea>
+
+                <label>Função de Governo</label>
+                <input id="f-funcao_governo" placeholder="Ex: 10 - Saúde">
+
+                <h2 style="margin-top:18px;">Plano de Trabalho / Cronograma de Execução</h2>
+                <div class="adm-row2">
+                    <div>
+                        <label>Início Previsto</label>
+                        <input id="f-data_inicio_prevista" type="date">
+                    </div>
+                    <div>
+                        <label>Término Previsto</label>
+                        <input id="f-data_termino_prevista" type="date">
+                    </div>
+                </div>
+                <label>Situação da Execução</label>
+                <select id="f-situacao_execucao">
+                    <option>A definir</option>
+                    <option>Não iniciada</option>
+                    <option>Em andamento</option>
+                    <option>Concluída</option>
+                </select>
+                <label>Observações do Plano de Trabalho (etapas, link do documento, etc.)</label>
+                <textarea id="f-obs_cronograma"></textarea>
+
+                <button class="btn btn-primary" id="btn-salvar-registro">Adicionar registro</button>
+                <button class="btn btn-outline" id="btn-cancelar-edicao" style="display:none;">Cancelar edição</button>
+            </div>
+        </div>
+
+        <div>
+            <div class="adm-box">
+                <h2>3. Registros (<span id="contador">0</span>) &mdash; alterações locais até publicar</h2>
+                <div class="tabela-wrap">
+                    <table class="adm-tabela">
+                        <thead>
+                            <tr>
+                                <th>Ano</th><th>Nº Emenda</th><th>Tipo</th><th>Autoria</th><th>Objeto</th>
+                                <th>Início</th><th>Término</th><th>Situação</th><th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpo-tabela"></tbody>
+                    </table>
+                </div>
+                <button class="btn btn-success" id="btn-publicar">Salvar e Publicar no GitHub</button>
+                <button class="btn btn-outline" id="btn-baixar">Baixar JSON (backup)</button>
+                <button class="btn btn-outline" id="btn-recarregar">Descartar e recarregar do GitHub</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pmp-footer">
+    Prefeitura Municipal de Portalegre/RN &middot; Painel Administrativo &middot; Uso restrito
+</div>
+
+<script>
+let emendas = [];
+let sha = null;
+let editandoIndex = null;
+
+function cfgStorage() {
+    return {
+        owner: document.getElementById('cfg-owner').value.trim(),
+        repo: document.getElementById('cfg-repo').value.trim(),
+        branch: document.getElementById('cfg-branch').value.trim() || 'main',
+        path: document.getElementById('cfg-path').value.trim() || 'emendas_data.json',
+        token: document.getElementById('cfg-token').value.trim()
+    };
+}
+
+function carregarConfigSalva() {
+    const raw = localStorage.getItem('pmp_admin_cfg');
+    if (!raw) return;
+    try {
+        const cfg = JSON.parse(raw);
+        document.getElementById('cfg-owner').value = cfg.owner || '';
+        document.getElementById('cfg-repo').value = cfg.repo || '';
+        document.getElementById('cfg-branch').value = cfg.branch || 'main';
+        document.getElementById('cfg-path').value = cfg.path || 'emendas_data.json';
+        document.getElementById('cfg-token').value = cfg.token || '';
+    } catch (e) {}
+}
+
+function mostrarStatus(msg, tipo) {
+    const el = document.getElementById('status-msg');
+    el.textContent = msg;
+    el.className = 'status-' + tipo;
+    el.style.display = 'block';
+}
+
+function b64EncodeUnicode(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (m, p1) => String.fromCharCode('0x' + p1)));
+}
+function b64DecodeUnicode(str) {
+    return decodeURIComponent(atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+}
+
+async function carregarDados() {
+    const cfg = cfgStorage();
+    if (!cfg.owner || !cfg.repo || !cfg.token) {
+        mostrarStatus('Preencha owner, repositório e token antes de carregar.', 'err');
+        return;
+    }
+    mostrarStatus('Carregando dados do GitHub...', 'info');
+    try {
+        const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}&_=${Date.now()}`;
+        const res = await fetch(url, {
+            headers: { Authorization: `token ${cfg.token}`, Accept: 'application/vnd.github+json' }
+        });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(`${res.status} ${res.statusText} - ${err.message || ''}`);
+        }
+        const json = await res.json();
+        sha = json.sha;
+        const decoded = b64DecodeUnicode(json.content.replace(/\n/g, ''));
+        emendas = JSON.parse(decoded);
+        renderTabela();
+        mostrarStatus(`Dados carregados com sucesso (${emendas.length} registros).`, 'ok');
+    } catch (e) {
+        mostrarStatus('Erro ao carregar: ' + e.message, 'err');
+    }
+}
+
+async function publicarDados() {
+    const cfg = cfgStorage();
+    if (!cfg.owner || !cfg.repo || !cfg.token) {
+        mostrarStatus('Preencha owner, repositório e token antes de publicar.', 'err');
+        return;
+    }
+    if (sha === null) {
+        mostrarStatus('Carregue os dados do GitHub antes de publicar (para evitar sobrescrever alterações de outra pessoa).', 'err');
+        return;
+    }
+    mostrarStatus('Publicando alterações no GitHub...', 'info');
+    try {
+        const conteudo = JSON.stringify(emendas, null, 2);
+        const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
+        const res = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                Authorization: `token ${cfg.token}`,
+                Accept: 'application/vnd.github+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: `Atualização de emendas via painel admin - ${new Date().toLocaleString('pt-BR')}`,
+                content: b64EncodeUnicode(conteudo),
+                sha: sha,
+                branch: cfg.branch
+            })
+        });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(`${res.status} ${res.statusText} - ${err.message || ''}`);
+        }
+        const json = await res.json();
+        sha = json.content.sha;
+        mostrarStatus('Publicado com sucesso! O GitHub Pages leva cerca de 1 minuto para atualizar o link público.', 'ok');
+    } catch (e) {
+        mostrarStatus('Erro ao publicar: ' + e.message, 'err');
+    }
+}
+
+function limparFormulario() {
+    ['origem', 'ano', 'numero_emenda', 'tipo_emenda', 'forma_repasse', 'autoria', 'numero_convenio',
+     'valor_previsto', 'valor_repassado', 'objeto', 'funcao_governo', 'data_inicio_prevista',
+     'data_termino_prevista', 'situacao_execucao', 'obs_cronograma'].forEach(id => {
+        const el = document.getElementById('f-' + id);
+        if (el.tagName === 'SELECT') el.selectedIndex = 0; else el.value = '';
+    });
+    editandoIndex = null;
+    document.getElementById('form-titulo').textContent = '2. Nova Emenda';
+    document.getElementById('btn-salvar-registro').textContent = 'Adicionar registro';
+    document.getElementById('btn-cancelar-edicao').style.display = 'none';
+}
+
+function coletarFormulario() {
+    return {
+        origem: document.getElementById('f-origem').value,
+        ano: document.getElementById('f-ano').value,
+        numero_emenda: document.getElementById('f-numero_emenda').value,
+        tipo_emenda: document.getElementById('f-tipo_emenda').value,
+        forma_repasse: document.getElementById('f-forma_repasse').value,
+        autoria: document.getElementById('f-autoria').value,
+        numero_convenio: document.getElementById('f-numero_convenio').value || 'Não Aplicável',
+        valor_previsto: document.getElementById('f-valor_previsto').value,
+        valor_repassado: document.getElementById('f-valor_repassado').value,
+        objeto: document.getElementById('f-objeto').value,
+        funcao_governo: document.getElementById('f-funcao_governo').value,
+        data_inicio_prevista: document.getElementById('f-data_inicio_prevista').value,
+        data_termino_prevista: document.getElementById('f-data_termino_prevista').value,
+        situacao_execucao: document.getElementById('f-situacao_execucao').value,
+        obs_cronograma: document.getElementById('f-obs_cronograma').value
+    };
+}
+
+function preencherFormulario(e) {
+    document.getElementById('f-origem').value = e.origem || 'Federal';
+    document.getElementById('f-ano').value = e.ano || '';
+    document.getElementById('f-numero_emenda').value = e.numero_emenda || '';
+    document.getElementById('f-tipo_emenda').value = e.tipo_emenda || 'Emenda Individual';
+    document.getElementById('f-forma_repasse').value = e.forma_repasse || 'Fundo a Fundo';
+    document.getElementById('f-autoria').value = e.autoria || '';
+    document.getElementById('f-numero_convenio').value = e.numero_convenio || '';
+    document.getElementById('f-valor_previsto').value = e.valor_previsto || '';
+    document.getElementById('f-valor_repassado').value = e.valor_repassado || '';
+    document.getElementById('f-objeto').value = e.objeto || '';
+    document.getElementById('f-funcao_governo').value = e.funcao_governo || '';
+    document.getElementById('f-data_inicio_prevista').value = e.data_inicio_prevista || '';
+    document.getElementById('f-data_termino_prevista').value = e.data_termino_prevista || '';
+    document.getElementById('f-situacao_execucao').value = e.situacao_execucao || 'A definir';
+    document.getElementById('f-obs_cronograma').value = e.obs_cronograma || '';
+}
+
+function renderTabela() {
+    const corpo = document.getElementById('corpo-tabela');
+    corpo.innerHTML = '';
+    emendas.forEach((e, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${e.ano || ''}</td>
+            <td>${e.numero_emenda || ''}</td>
+            <td>${e.tipo_emenda || ''}</td>
+            <td>${e.autoria || ''}</td>
+            <td>${(e.objeto || '').slice(0, 60)}</td>
+            <td>${e.data_inicio_prevista || '-'}</td>
+            <td>${e.data_termino_prevista || '-'}</td>
+            <td>${e.situacao_execucao || ''}</td>
+            <td>
+                <button class="btn btn-edit" data-i="${i}" data-acao="editar">Editar</button>
+                <button class="btn btn-danger" data-i="${i}" data-acao="excluir">Excluir</button>
+            </td>
+        `;
+        corpo.appendChild(tr);
+    });
+    document.getElementById('contador').textContent = emendas.length;
+}
+
+document.getElementById('corpo-tabela').addEventListener('click', (ev) => {
+    const btn = ev.target.closest('button');
+    if (!btn) return;
+    const i = parseInt(btn.dataset.i, 10);
+    if (btn.dataset.acao === 'editar') {
+        editandoIndex = i;
+        preencherFormulario(emendas[i]);
+        document.getElementById('form-titulo').textContent = '2. Editando Emenda #' + (i + 1);
+        document.getElementById('btn-salvar-registro').textContent = 'Salvar edição';
+        document.getElementById('btn-cancelar-edicao').style.display = 'inline-block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (btn.dataset.acao === 'excluir') {
+        if (confirm('Remover este registro da lista local? A remoção só será definitiva após clicar em "Salvar e Publicar".')) {
+            emendas.splice(i, 1);
+            renderTabela();
+        }
+    }
+});
+
+document.getElementById('btn-salvar-registro').addEventListener('click', () => {
+    const dados = coletarFormulario();
+    if (!dados.numero_emenda || !dados.autoria) {
+        alert('Preencha ao menos o número da emenda e a autoria.');
+        return;
+    }
+    if (editandoIndex !== null) {
+        emendas[editandoIndex] = dados;
+    } else {
+        emendas.push(dados);
+    }
+    renderTabela();
+    limparFormulario();
+});
+
+document.getElementById('btn-cancelar-edicao').addEventListener('click', limparFormulario);
+
+document.getElementById('btn-salvar-cfg').addEventListener('click', () => {
+    localStorage.setItem('pmp_admin_cfg', JSON.stringify(cfgStorage()));
+    mostrarStatus('Configuração salva neste navegador.', 'ok');
+});
+
+document.getElementById('btn-esquecer').addEventListener('click', () => {
+    localStorage.removeItem('pmp_admin_cfg');
+    document.getElementById('cfg-token').value = '';
+    mostrarStatus('Token removido deste navegador.', 'info');
+});
+
+document.getElementById('btn-carregar').addEventListener('click', carregarDados);
+document.getElementById('btn-recarregar').addEventListener('click', () => {
+    if (confirm('Descartar alterações locais não publicadas e recarregar do GitHub?')) carregarDados();
+});
+document.getElementById('btn-publicar').addEventListener('click', () => {
+    if (confirm(`Publicar ${emendas.length} registro(s) no repositório? A página pública será atualizada em cerca de 1 minuto.`)) {
+        publicarDados();
+    }
+});
+document.getElementById('btn-baixar').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(emendas, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'emendas_data.json';
+    a.click();
+});
+
+carregarConfigSalva();
+</script>
+</body>
+</html>
